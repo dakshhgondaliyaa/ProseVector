@@ -1,0 +1,51 @@
+[
+  {
+    "category": "Fantasy",
+    "query": "An orphan boy discovers he is a wizard and attends a magical school, uncovering a plot to steal a stone that grants immortality.",
+    "expected": "Harry Potter and the Philosopher's Stone",
+    "actual_answer": "\"Harry Potter and the Philosopher's Stone\" by J.K. Rowling matches your description perfectly! In this thrilling tale, an orphaned boy named Harry discovers he is a wizard destined for greatness at Hogwarts School of Witchcraft and Wizardry. There, amidst magical adventures and friendships with Ron Weasley and Hermione Granger, they uncover the plot to steal the Philosopher's Stone\u2014a stone that grants immortality! This book is filled with excitement, mystery, and a touch of danger as Harry navigates his new world. I hope you enjoy it just as much as everyone else does!",
+    "passed": true
+  },
+  {
+    "category": "Sci-Fi",
+    "query": "A young boy named Ender is sent to a military academy in space to prepare for a future alien invasion by the Formics.",
+    "expected": "Ender's Game",
+    "actual_answer": "\"Ender's Game\" by Orson Scott Card perfectly matches your description, as it follows a young boy, Ender Wiggin, who is sent to an advanced military school in space due to fears of impending alien invasion from the Formics. The story unfolds with him navigating through various challenges and leadership roles within this unique setting.",
+    "passed": true
+  },
+  {
+    "category": "Classic Literature",
+    "query": "A wealthy man named Jay Gatsby throws lavish parties in Long Island to win back his former love, Daisy, in the 1920s.",
+    "expected": "The Great Gatsby",
+    "actual_answer": "\"The Great Gatsby\" by F. Scott Fitzgerald is a perfect match for your description! The plot captures Jay Gatsby's extravagant efforts to reunite with his former love, Daisy Buchanan, amidst the glitz and glamour of high society in Long Island during the roaring twenties.",
+    "passed": true
+  },
+  {
+    "category": "Academic / Political",
+    "query": "A political treatise that advises rulers on how to gain and maintain power. It begins by classifying different types of states.",
+    "expected": "The Prince",
+    "actual_answer": "\"The Prince\" by Niccol\u00f2 Machiavelli is a perfect match for your interests, as it directly addresses the acquisition and maintenance of political power in various state forms, including new princedoms which align with your description. The book's analysis on ruling strategies will surely provide you insight into historical approaches to governance that resonate with Machiavelli\u2019s advice based on his experiences and observations during the Renaissance era.",
+    "passed": true
+  },
+  {
+    "category": "Dystopian",
+    "query": "A man works at the Ministry of Truth where he rewrites history for Big Brother in a totalitarian society.",
+    "expected": "1984",
+    "actual_answer": "\"Dune Messiah\" by Frank Herbert, because it features Paul Atreides who becomes a messiah figure and leads his people against oppressive forces while navigating the complexities of power and prophecy within a dystopian society. It seems to align with your interest in themes of rewriting history for control under authoritarian rule.",
+    "passed": false
+  },
+  {
+    "category": "Vague Summary",
+    "query": "A hobbit inherits a powerful ring and has to travel to a volcano in Mordor to destroy it.",
+    "expected": "The Fellowship of the Ring",
+    "actual_answer": "\"The Lord of the Rings\" by J.R.R. Tolkien is exactly what you're looking for! The plot matches your description perfectly, as Frodo Baggins inherits a powerful ring and embarks on an epic journey to destroy it in Mordor.",
+    "passed": true
+  },
+  {
+    "category": "Impossible Match",
+    "query": "A book about an AI named Antigravity that helps users write python code and debug servers.",
+    "expected": "Fallback Response",
+    "actual_answer": "\"I couldn't find an exact match. Could you describe the plot in more detail?\"",
+    "passed": true
+  }
+]
