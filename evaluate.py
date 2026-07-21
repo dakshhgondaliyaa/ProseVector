@@ -63,8 +63,8 @@ def run_evaluation():
             if answer_hit:
                 correct_answers += 1
                 
-            print(f"Retrieval Match: {'✅' if retrieval_hit else '❌'}")
-            print(f"LLM Answer Match: {'✅' if answer_hit else '❌'}")
+            print(f"Retrieval Match: {'PASS' if retrieval_hit else 'FAIL'}")
+            print(f"LLM Answer Match: {'PASS' if answer_hit else 'FAIL'}")
             print(f"LLM Answer: {answer}\n")
             
         except Exception as e:

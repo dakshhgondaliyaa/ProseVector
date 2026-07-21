@@ -58,6 +58,7 @@ body {
   margin-bottom: 30px;
   background: var(--accent-gradient);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: -0.5px;
 }
@@ -137,6 +138,22 @@ body {
   font-weight: 500;
 }
 
+.delete-btn {
+  margin-left: auto;
+  opacity: 0;
+  transition: opacity 0.2s;
+  padding: 4px;
+  color: var(--text-muted);
+  border-radius: 4px;
+}
+.delete-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ef4444;
+}
+.history-item:hover .delete-btn {
+  opacity: 1;
+}
+
 .main-content {
   flex: 1;
   display: flex;
@@ -212,6 +229,7 @@ body {
   margin-bottom: 16px;
   background: var(--accent-gradient);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: -0.5px;
 }
@@ -284,6 +302,34 @@ body {
   border: 1px solid var(--border);
   border-top-left-radius: 4px;
   backdrop-filter: blur(12px);
+}
+
+.msg-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  justify-content: flex-end;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.message:hover .msg-actions {
+  opacity: 1;
+}
+.msg-action-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 6px;
+  color: var(--text-muted);
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.msg-action-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
 }
 
 .book-card {
@@ -495,6 +541,15 @@ body {
 </head>
 <body>
 
+<div id="login-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg-color); z-index:9999; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(10px);">
+  <div style="background:var(--panel-bg); padding:40px; border-radius:16px; border:1px solid var(--border); text-align:center; max-width:300px; width:100%;">
+    <h2 style="margin:0 0 20px 0; font-weight:700;">ProseVector</h2>
+    <input type="text" id="login-username" placeholder="Username" style="width:100%; box-sizing:border-box; background:rgba(0,0,0,0.3); border:1px solid var(--border); color:#fff; padding:12px; border-radius:8px; margin-bottom:12px; font-family:inherit;">
+    <input type="password" id="login-password" placeholder="Enter Password" style="width:100%; box-sizing:border-box; background:rgba(0,0,0,0.3); border:1px solid var(--border); color:#fff; padding:12px; border-radius:8px; margin-bottom:16px; font-family:inherit;" onkeydown="if(event.key==='Enter') handleLogin()">
+    <button onclick="handleLogin()" style="width:100%; background:var(--accent-gradient); border:none; padding:12px; border-radius:8px; color:#fff; font-weight:600; cursor:pointer;">Login</button>
+  </div>
+</div>
+
 <aside class="sidebar">
   <div class="logo">ProseVector</div>
   <button class="new-chat-btn" onclick="startNewChat()">
@@ -504,6 +559,15 @@ body {
   <div class="history-title">Recent Searches</div>
   <div class="history-list" id="historyList">
     <!-- History items injected here via JS -->
+  </div>
+  <div class="user-profile" style="margin-top:auto; padding-top:16px; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;">
+    <div style="display:flex; align-items:center; gap:8px;">
+      <div style="width:32px; height:32px; border-radius:50%; background:var(--accent-gradient); display:flex; align-items:center; justify-content:center; font-weight:bold;" id="profile-initial">U</div>
+      <span id="profile-username" style="font-size:14px; font-weight:500;">User</span>
+    </div>
+    <button onclick="handleLogout()" style="background:transparent; border:none; color:var(--text-muted); cursor:pointer; padding:4px;" title="Logout">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+    </button>
   </div>
 </aside>
 
@@ -553,11 +617,43 @@ const examplesRow = document.getElementById('examplesRow');
 
 // Initialize
 function init() {
+  if (localStorage.getItem('pv_auth') !== 'true') {
+    document.getElementById('login-overlay').style.display = 'flex';
+  } else {
+    document.getElementById('login-overlay').style.display = 'none';
+    updateProfileUI();
+  }
+
   if (sessions.length > 0) {
     loadSession(sessions[0].id);
   } else {
     startNewChat();
   }
+}
+
+function handleLogin() {
+  const user = document.getElementById('login-username').value.trim();
+  const pwd = document.getElementById('login-password').value;
+  if (user.length > 0 && pwd.length > 0) {
+    localStorage.setItem('pv_auth', 'true');
+    localStorage.setItem('pv_user', user);
+    document.getElementById('login-overlay').style.display = 'none';
+    updateProfileUI();
+  } else {
+    alert('Please enter both username and password');
+  }
+}
+
+function handleLogout() {
+  localStorage.removeItem('pv_auth');
+  document.getElementById('login-overlay').style.display = 'flex';
+  document.getElementById('login-password').value = '';
+}
+
+function updateProfileUI() {
+  const user = localStorage.getItem('pv_user') || 'User';
+  document.getElementById('profile-username').innerText = user;
+  document.getElementById('profile-initial').innerText = user.charAt(0).toUpperCase();
 }
 
 // Generate unique ID
@@ -594,14 +690,23 @@ function saveSessions() {
 function renderHistory() {
   historyList.innerHTML = '';
   sessions.forEach(session => {
-    // Only show sessions with at least one message
-    if (session.messages.length === 0 && session.id !== currentSessionId) return;
-
+    // We will no longer auto-hide empty sessions, so they don't unexpectedly "vanish".
+    // Instead, we will allow the user to delete any session EXCEPT the active empty one.
+    
     const el = document.createElement('div');
     el.className = `history-item ${session.id === currentSessionId ? 'active' : ''}`;
+    
+    // Don't show delete icon on the currently active "New Session" (empty chat),
+    // but show it for all previous chats (even if empty) so they can be removed.
+    const showDelete = session.messages.length > 0 || session.id !== currentSessionId;
+    
     el.innerHTML = `
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
       <span style="overflow:hidden; text-overflow:ellipsis;">${session.title}</span>
+      ${showDelete ? `
+      <div class="delete-btn" onclick="event.stopPropagation(); deleteSession('${session.id}')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+      </div>` : ''}
     `;
     el.onclick = () => loadSession(session.id);
     historyList.appendChild(el);
@@ -624,9 +729,9 @@ function renderChat() {
   }
   
   examplesRow.style.display = 'none';
-  session.messages.forEach(msg => {
+  session.messages.forEach((msg, idx) => {
     if (msg.role === 'user') {
-      appendUserMessageUI(msg.text);
+      appendUserMessageUI(msg.text, idx);
     } else {
       appendBotMessageUI(msg.text, msg.bookTitle, msg.sources);
     }
@@ -655,15 +760,15 @@ async function sendMessage() {
   
   const session = sessions.find(s => s.id === currentSessionId);
   
-  // Update title if it's the first message
-  if (session.messages.length === 0) {
-    session.title = text.length > 25 ? text.substring(0, 25) + '...' : text;
-    renderHistory();
-  }
-  
   // Add to state
   session.messages.push({ role: 'user', text: text });
   saveSessions();
+  
+  // Update title and history UI *after* pushing the message
+  if (session.messages.length === 1) {
+    session.title = text.length > 25 ? text.substring(0, 25) + '...' : text;
+    renderHistory();
+  }
   
   // Update UI
   messageInput.value = '';
@@ -673,7 +778,7 @@ async function sendMessage() {
   const emptyState = document.querySelector('.empty-state');
   if (emptyState) emptyState.remove();
   
-  appendUserMessageUI(text);
+  appendUserMessageUI(text, session.messages.length - 1);
   
   const typingId = appendTypingUI();
   
@@ -681,7 +786,10 @@ async function sendMessage() {
     const res = await fetch('/chat', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ message: text })
+      body: JSON.stringify({ 
+        message: text,
+        history: session.messages.slice(0, -1).map(m => ({role: m.role, text: m.text}))
+      })
     });
     const data = await res.json();
     
@@ -714,12 +822,77 @@ async function sendMessage() {
   messageInput.focus();
 }
 
-function appendUserMessageUI(text) {
+function deleteSession(id) {
+  sessions = sessions.filter(s => s.id !== id);
+  if (sessions.length === 0 || currentSessionId === id) {
+    startNewChat();
+  } else {
+    saveSessions();
+    renderHistory();
+  }
+}
+
+function editMessage(idx) {
+  const bubble = document.getElementById('msg-bubble-' + idx);
+  if (!bubble) return;
+  const session = sessions.find(s => s.id === currentSessionId);
+  if (!session || !session.messages[idx]) return;
+  const text = session.messages[idx].text;
+  
+  bubble.innerHTML = `
+    <textarea id="edit-input-${idx}" style="width:100%; background:rgba(0,0,0,0.2); border:1px solid var(--border); color:#fff; padding:8px; border-radius:6px; font-family:inherit; resize:vertical; min-height:60px;">${text}</textarea>
+    <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+      <button onclick="renderChat()" style="background:transparent; border:none; color:var(--text-muted); cursor:pointer;">Cancel</button>
+      <button onclick="saveEdit(${idx})" style="background:var(--accent); border:none; color:#fff; padding:4px 12px; border-radius:4px; cursor:pointer;">Save</button>
+    </div>
+  `;
+}
+
+function saveEdit(idx) {
+  const newText = document.getElementById('edit-input-' + idx).value;
+  const session = sessions.find(s => s.id === currentSessionId);
+  if (session && session.messages[idx]) {
+    session.messages[idx].text = newText;
+    saveSessions();
+  }
+  renderChat();
+}
+
+function undoMessage(idx) {
+  const session = sessions.find(s => s.id === currentSessionId);
+  if (!session || !session.messages[idx]) return;
+  const text = session.messages[idx].text;
+  session.messages = session.messages.slice(0, idx);
+  saveSessions();
+  messageInput.value = text;
+  renderChat();
+  messageInput.focus();
+}
+
+function appendUserMessageUI(text, msgIndex) {
   const el = document.createElement('div');
   el.className = 'message user';
+  
+  let actionsHtml = '';
+  if (msgIndex !== undefined) {
+    actionsHtml = `
+      <div class="msg-actions">
+        <button class="msg-action-btn" onclick="editMessage(${msgIndex})">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Edit
+        </button>
+        <button class="msg-action-btn" onclick="undoMessage(${msgIndex})">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg> Undo
+        </button>
+      </div>
+    `;
+  }
+  
   el.innerHTML = `
     <div class="avatar user">You</div>
-    <div class="bubble">${text.replace(/\n/g,'<br>')}</div>
+    <div class="bubble" id="msg-bubble-${msgIndex}">
+      ${text.replace(/\n/g,'<br>')}
+      ${actionsHtml}
+    </div>
   `;
   chatContainer.appendChild(el);
   setTimeout(() => chatContainer.scrollTop = chatContainer.scrollHeight, 10);

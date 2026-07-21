@@ -4,39 +4,39 @@ import time
 
 TEST_QUERIES = [
     {
-        "category": "Fantasy",
-        "query": "An orphan boy discovers he is a wizard and attends a magical school, uncovering a plot to steal a stone that grants immortality.",
-        "expected": "Harry Potter and the Philosopher's Stone",
+        "category": "Economics",
+        "query": "An economics text that discusses the division of labor, productivity, and free markets, arguing that an 'invisible hand' guides self-interest to benefit society.",
+        "expected": "The Wealth of Nations",
         "should_match": True
     },
     {
-        "category": "Sci-Fi",
-        "query": "A young boy named Ender is sent to a military academy in space to prepare for a future alien invasion by the Formics.",
-        "expected": "Ender's Game",
+        "category": "Political Philosophy",
+        "query": "A political text arguing that society requires a strong, absolute sovereign to avoid the 'war of all against all' and ensure order.",
+        "expected": "Leviathan",
         "should_match": True
     },
     {
-        "category": "Classic Literature",
-        "query": "A wealthy man named Jay Gatsby throws lavish parties in Long Island to win back his former love, Daisy, in the 1920s.",
-        "expected": "The Great Gatsby",
+        "category": "Political Science",
+        "query": "A French sociologist's observations on the American political system, equality, and civil society after visiting the United States in the 1830s.",
+        "expected": "Democracy in America",
         "should_match": True
     },
     {
-        "category": "Academic / Political",
-        "query": "A political treatise that advises rulers on how to gain and maintain power. It begins by classifying different types of states.",
-        "expected": "The Prince",
+        "category": "Anthropology / History",
+        "query": "An anthropological history book arguing that environmental and geographic factors, rather than intellectual or genetic superiority, allowed Eurasian societies to conquer others.",
+        "expected": "Guns, Germs, and Steel",
         "should_match": True
     },
     {
-        "category": "Dystopian",
-        "query": "A man works at the Ministry of Truth where he rewrites history for Big Brother in a totalitarian society.",
-        "expected": "1984",
+        "category": "Philosophy of Science",
+        "query": "A philosophy of science book that introduces the concept of a 'paradigm shift', arguing that science progresses through sudden revolutions rather than linear accumulation of facts.",
+        "expected": "The Structure of Scientific Revolutions",
         "should_match": True
     },
     {
-        "category": "Vague Summary",
-        "query": "A hobbit inherits a powerful ring and has to travel to a volcano in Mordor to destroy it.",
-        "expected": "The Fellowship of the Ring",
+        "category": "Ethics",
+        "query": "An ethical theory book arguing that the best action is the one that maximizes overall happiness or pleasure for the greatest number of people.",
+        "expected": "Utilitarianism",
         "should_match": True
     },
     {
@@ -54,24 +54,24 @@ def run_tests():
     for item in TEST_QUERIES:
         print(f"Testing: {item['category']}")
         try:
-            res = requests.post(API_URL, json={"message": item["query"]}, timeout=30)
+            res = requests.post(API_URL, json={"message": item["query"]}, timeout=120)
             data = res.json()
             answer = data.get("answer", "")
             
             # Simple check if the expected word/phrase is in the answer
             if item["should_match"]:
-                if "gatsby" in item["expected"].lower():
-                    passed = "gatsby" in answer.lower()
-                elif "ender" in item["expected"].lower():
-                    passed = "ender" in answer.lower()
-                elif "harry" in item["expected"].lower():
-                    passed = "harry" in answer.lower()
-                elif "prince" in item["expected"].lower():
-                    passed = "prince" in answer.lower()
-                elif "1984" in item["expected"].lower():
-                    passed = "1984" in answer.lower()
-                elif "fellowship" in item["expected"].lower():
-                    passed = "fellowship" in answer.lower() or "lord of the rings" in answer.lower()
+                if "wealth" in item["expected"].lower():
+                    passed = "wealth of nations" in answer.lower()
+                elif "leviathan" in item["expected"].lower():
+                    passed = "leviathan" in answer.lower()
+                elif "democracy" in item["expected"].lower():
+                    passed = "democracy in america" in answer.lower()
+                elif "guns" in item["expected"].lower():
+                    passed = "guns, germs, and steel" in answer.lower() or "guns, germs" in answer.lower()
+                elif "structure" in item["expected"].lower():
+                    passed = "structure of scientific revolutions" in answer.lower() or "scientific revolutions" in answer.lower()
+                elif "utilitarianism" in item["expected"].lower():
+                    passed = "utilitarianism" in answer.lower()
                 else:
                     passed = item["expected"].lower() in answer.lower()
             else:

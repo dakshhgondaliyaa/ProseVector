@@ -10,12 +10,12 @@ EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 FAISS_INDEX_PATH = "faiss_index"
 
 TARGET_BOOKS = [
-    "Harry Potter and the Philosopher's Stone",
-    "Ender's Game",
-    "The Great Gatsby",
-    "The Prince",
-    "1984",
-    "The Fellowship of the Ring"
+    "The Wealth of Nations",
+    "Leviathan",
+    "Democracy in America",
+    "Guns, Germs, and Steel",
+    "The Structure of Scientific Revolutions",
+    "Utilitarianism"
 ]
 
 print("Loading dataset...")

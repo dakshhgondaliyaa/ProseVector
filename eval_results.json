@@ -1,51 +1,51 @@
 [
   {
-    "category": "Fantasy",
-    "query": "An orphan boy discovers he is a wizard and attends a magical school, uncovering a plot to steal a stone that grants immortality.",
-    "expected": "Harry Potter and the Philosopher's Stone",
-    "actual_answer": "\"Harry Potter and the Philosopher's Stone\" by J.K. Rowling matches your description perfectly! In this thrilling tale, an orphaned boy named Harry discovers he is a wizard destined for greatness at Hogwarts School of Witchcraft and Wizardry. There, amidst magical adventures and friendships with Ron Weasley and Hermione Granger, they uncover the plot to steal the Philosopher's Stone\u2014a stone that grants immortality! This book is filled with excitement, mystery, and a touch of danger as Harry navigates his new world. I hope you enjoy it just as much as everyone else does!",
+    "category": "Economics",
+    "query": "An economics text that discusses the division of labor, productivity, and free markets, arguing that an 'invisible hand' guides self-interest to benefit society.",
+    "expected": "The Wealth of Nations",
+    "actual_answer": "\"The Wealth of Nations\" by Adam Smith would be a perfect match for your interests! This book delves into the division of labor and how it significantly boosts productivity, all while championing free markets as essential for societal prosperity. It introduces you to the concept of an 'invisible hand' that guides self-interest towards promoting society's welfare\u2014a core idea in economic theory today!",
     "passed": true
   },
   {
-    "category": "Sci-Fi",
-    "query": "A young boy named Ender is sent to a military academy in space to prepare for a future alien invasion by the Formics.",
-    "expected": "Ender's Game",
-    "actual_answer": "\"Ender's Game\" by Orson Scott Card perfectly matches your description, as it follows a young boy, Ender Wiggin, who is sent to an advanced military school in space due to fears of impending alien invasion from the Formics. The story unfolds with him navigating through various challenges and leadership roles within this unique setting.",
-    "passed": true
-  },
-  {
-    "category": "Classic Literature",
-    "query": "A wealthy man named Jay Gatsby throws lavish parties in Long Island to win back his former love, Daisy, in the 1920s.",
-    "expected": "The Great Gatsby",
-    "actual_answer": "\"The Great Gatsby\" by F. Scott Fitzgerald is a perfect match for your description! The plot captures Jay Gatsby's extravagant efforts to reunite with his former love, Daisy Buchanan, amidst the glitz and glamour of high society in Long Island during the roaring twenties.",
-    "passed": true
-  },
-  {
-    "category": "Academic / Political",
-    "query": "A political treatise that advises rulers on how to gain and maintain power. It begins by classifying different types of states.",
-    "expected": "The Prince",
-    "actual_answer": "\"The Prince\" by Niccol\u00f2 Machiavelli is a perfect match for your interests, as it directly addresses the acquisition and maintenance of political power in various state forms, including new princedoms which align with your description. The book's analysis on ruling strategies will surely provide you insight into historical approaches to governance that resonate with Machiavelli\u2019s advice based on his experiences and observations during the Renaissance era.",
-    "passed": true
-  },
-  {
-    "category": "Dystopian",
-    "query": "A man works at the Ministry of Truth where he rewrites history for Big Brother in a totalitarian society.",
-    "expected": "1984",
-    "actual_answer": "\"Dune Messiah\" by Frank Herbert, because it features Paul Atreides who becomes a messiah figure and leads his people against oppressive forces while navigating the complexities of power and prophecy within a dystopian society. It seems to align with your interest in themes of rewriting history for control under authoritarian rule.",
+    "category": "Political Philosophy",
+    "query": "A political text arguing that society requires a strong, absolute sovereign to avoid the 'war of all against all' and ensure order.",
+    "expected": "Leviathan",
+    "actual_answer": "\"On War\" by Carl von Clausewitz might be what you're looking for! The book delves into how war is an extension of politics or Politik, which seems right up your alley if you're interested in the political aspects that underpin military strategy. It discusses concepts like limited aims and disarming enemies to achieve peace\u2014ideas quite relevant when considering society\u2019s need for order as mentioned by Clausewitz himself. So give it a read, I think you'll find some of his thoughts resonate with your description!",
     "passed": false
   },
   {
-    "category": "Vague Summary",
-    "query": "A hobbit inherits a powerful ring and has to travel to a volcano in Mordor to destroy it.",
-    "expected": "The Fellowship of the Ring",
-    "actual_answer": "\"The Lord of the Rings\" by J.R.R. Tolkien is exactly what you're looking for! The plot matches your description perfectly, as Frodo Baggins inherits a powerful ring and embarks on an epic journey to destroy it in Mordor.",
+    "category": "Political Science",
+    "query": "A French sociologist's observations on the American political system, equality, and civil society after visiting the United States in the 1830s.",
+    "expected": "Democracy in America",
+    "actual_answer": "\"Democracy in America\" by Alexis de Tocqueville is a perfect match for your interests! De Tocqueville provides an insightful analysis of American democracy, focusing on its successes and potential threats like the tyranny of majority. He contrasts this with his observations from France where religion was intertwined with government in different ways than he saw in America. His work covers political society as well as civil society's role outside politics\u2014a comprehensive look at American democracy during that era!",
+    "passed": true
+  },
+  {
+    "category": "Anthropology / History",
+    "query": "An anthropological history book arguing that environmental and geographic factors, rather than intellectual or genetic superiority, allowed Eurasian societies to conquer others.",
+    "expected": "Guns, Germs, and Steel",
+    "actual_answer": "\"Guns, Germs, and Steel\" by Jared Diamond is a perfect match for your interests! This book delves into how the unique geography of Eurasia provided opportunities that led European civilizations to develop advanced technologies like guns (steel) and agriculture. It also explores how diseases spread among populations, with Europeans having some immunity due to their history interacting with domesticated animals\u2014a concept known as 'germs.' Diamond suggests these factors combined allowed for the domination of other societies by European powers in recent centuries. This anthropological journey through environmental determinism and its impact on global power dynamics seems like exactly what you're looking for!",
+    "passed": true
+  },
+  {
+    "category": "Philosophy of Science",
+    "query": "A philosophy of science book that introduces the concept of a 'paradigm shift', arguing that science progresses through sudden revolutions rather than linear accumulation of facts.",
+    "expected": "The Structure of Scientific Revolutions",
+    "actual_answer": "\"The Structure of Scientific Revolutions\" by Thomas Samuel Kuhn is an excellent match for your description! This book delves into the concept of paradigm shifts, where science doesn't progress in a straight line but through significant leaps and turns. It explores how these revolutionary changes occur within scientific communities when old theories can no longer explain anomalies, leading to new frameworks that redefine our understanding of reality. Kuhn emphasizes the role of bold scientists who challenge established norms, which perfectly aligns with your interest in this dynamic process of change and discovery. So grab a copy for an insightful read into how science evolves through these pivotal moments!",
+    "passed": true
+  },
+  {
+    "category": "Ethics",
+    "query": "An ethical theory book arguing that the best action is the one that maximizes overall happiness or pleasure for the greatest number of people.",
+    "expected": "Utilitarianism",
+    "actual_answer": "\"Utilitarianism\" by John Stuart Mill, as you described it sounds like a classic take on utilitarian philosophy! In this book, Mill argues passionately in favor of actions that promote the most happiness and pleasure for the greatest number of people. He even uses his famous quote about being better off dissatisfied than satisfied to emphasize how important personal growth is within society's wellbeing. This text will surely resonate with your interests as it delves into both intellectual pleasures, like art and music, which Mill champions for their superior quality over mere sensual ones. It also tackles the concept of justice from a utilitarian perspective\u2014a topic you might find intriguing given its depth in relation to ethical theories!",
     "passed": true
   },
   {
     "category": "Impossible Match",
     "query": "A book about an AI named Antigravity that helps users write python code and debug servers.",
     "expected": "Fallback Response",
-    "actual_answer": "\"I couldn't find an exact match. Could you describe the plot in more detail?\"",
-    "passed": true
+    "actual_answer": "\"Dune\" by Frank Herbert\n\nWhile \"Dune\" doesn't exactly match the plot of a Python-focused AI, it does delve into themes surrounding technology and artificial intelligence in its own unique way through the character Armitage. However, if you are looking for something more closely related to your description about an AI named Antigravity that helps with coding tasks specifically within python programming language, I'm afraid \"Dune\" might not be what you need here.\n\nIf there is a particular aspect of technology or artificial intelligence in literature that interests you beyond the specifics mentioned above, perhaps we could explore other books like 'Neuromancer', which touches on AI and cyberspace concepts? Or maybe consider looking into science fiction works with programming themes for more relevant content.",
+    "passed": false
   }
 ]

@@ -1,0 +1,144 @@
+{
+  "miniLM": {
+    "model": "sentence-transformers/all-MiniLM-L6-v2",
+    "accuracy_pct": 83.33333333333333,
+    "passed": 5,
+    "total": 6,
+    "avg_latency_ms": 16,
+    "details": [
+      {
+        "category": "Economics",
+        "expected": "The Wealth of Nations",
+        "found": true,
+        "rank": 1,
+        "latency_ms": 57,
+        "top_results": [
+          "The Wealth of Nations"
+        ]
+      },
+      {
+        "category": "Political Philosophy",
+        "expected": "Leviathan",
+        "found": false,
+        "rank": -1,
+        "latency_ms": 8,
+        "top_results": [
+          "On War",
+          "The Wealth of Nations"
+        ]
+      },
+      {
+        "category": "Political Science",
+        "expected": "Democracy in America",
+        "found": true,
+        "rank": 1,
+        "latency_ms": 8,
+        "top_results": [
+          "Democracy in America",
+          "The Wealth of Nations",
+          "On War"
+        ]
+      },
+      {
+        "category": "Anthropology / History",
+        "expected": "Guns, Germs, and Steel",
+        "found": true,
+        "rank": 1,
+        "latency_ms": 8,
+        "top_results": [
+          "Guns, Germs, and Steel"
+        ]
+      },
+      {
+        "category": "Philosophy of Science",
+        "expected": "The Structure of Scientific Revolutions",
+        "found": true,
+        "rank": 1,
+        "latency_ms": 8,
+        "top_results": [
+          "The Structure of Scientific Revolutions"
+        ]
+      },
+      {
+        "category": "Ethics",
+        "expected": "Utilitarianism",
+        "found": true,
+        "rank": 1,
+        "latency_ms": 10,
+        "top_results": [
+          "Utilitarianism"
+        ]
+      }
+    ]
+  },
+  "mpnet": {
+    "model": "sentence-transformers/all-mpnet-base-v2",
+    "accuracy_pct": 83.33333333333333,
+    "passed": 5,
+    "total": 6,
+    "avg_latency_ms": 60,
+    "details": [
+      {
+        "category": "Economics",
+        "expected": "The Wealth of Nations",
+        "found": true,
+        "rank": 1,
+        "latency_ms": 75,
+        "top_results": [
+          "The Wealth of Nations"
+        ]
+      },
+      {
+        "category": "Political Philosophy",
+        "expected": "Leviathan",
+        "found": false,
+        "rank": -1,
+        "latency_ms": 58,
+        "top_results": [
+          "On War"
+        ]
+      },
+      {
+        "category": "Political Science",
+        "expected": "Democracy in America",
+        "found": true,
+        "rank": 1,
+        "latency_ms": 54,
+        "top_results": [
+          "Democracy in America",
+          "The Wealth of Nations"
+        ]
+      },
+      {
+        "category": "Anthropology / History",
+        "expected": "Guns, Germs, and Steel",
+        "found": true,
+        "rank": 1,
+        "latency_ms": 55,
+        "top_results": [
+          "Guns, Germs, and Steel"
+        ]
+      },
+      {
+        "category": "Philosophy of Science",
+        "expected": "The Structure of Scientific Revolutions",
+        "found": true,
+        "rank": 1,
+        "latency_ms": 59,
+        "top_results": [
+          "The Structure of Scientific Revolutions"
+        ]
+      },
+      {
+        "category": "Ethics",
+        "expected": "Utilitarianism",
+        "found": true,
+        "rank": 1,
+        "latency_ms": 56,
+        "top_results": [
+          "Utilitarianism"
+        ]
+      }
+    ]
+  }
+}

@@ -16,7 +16,7 @@ load_dotenv()
 FAISS_INDEX_PATH     = "faiss_index"
 EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 OLLAMA_MODEL         = "phi3"      # change to "mistral" if you have 8GB+ RAM
-TOP_K_RESULTS        = 5
+TOP_K_RESULTS        = 3
 
 app = Flask(__name__, static_folder="frontend")
 CORS(app)
@@ -47,16 +47,23 @@ def build_rag_chain(vectorstore):
         search_kwargs={"k": TOP_K_RESULTS},
     )
 
-    prompt_template = """You are ProseVector, an expert AI book librarian.
-A reader has described a book they are looking for. Use ONLY the book information provided in the context below to recommend the best matching book. DO NOT invent or hallucinate any books, authors, or plots.
+    prompt_template = """You are ProseVector, a helpful and expert AI book librarian.
+A reader has described a book they are looking for. Use the book summaries provided in the context below to recommend the best matching book.
 
 Your response must:
 1. State the exact book title in double quotes like "Dune" and the author name.
-2. In one sentence, explain why the plot from the context matches the reader's description.
+2. In one or two sentences, explain why the plot from the context matches the reader's description.
 3. Be warm and conversational.
 
-If none of the books in the context match the reader's description, you must reply EXACTLY with this sentence and nothing else:
+IMPORTANT — Before recommending a book, check: does the context actually contain a book whose plot, themes, or subject matter genuinely matches what the reader described? If YES, recommend it. If NO — if the retrieved summaries are about completely different topics, genres, or subjects — you MUST respond with exactly:
 "I couldn't find an exact match. Could you describe the plot in more detail?"
+
+Do NOT guess or force a loose connection. Only recommend a book if there is a clear, genuine match between the reader's description and a book summary in the context.
+
+Example of correct fallback:
+- Reader asks: "A book about training dolphins to deliver mail underwater"
+- Context contains summaries about war novels and romance fiction
+- Correct response: "I couldn't find an exact match. Could you describe the plot in more detail?"
 
 Context:
 {context}
@@ -88,12 +95,24 @@ def serve_index():
 def chat():
     data    = request.get_json()
     message = data.get("message", "").strip()
+    history = data.get("history", [])
 
     if not message:
         return jsonify({"error": "Empty message"}), 400
+        
+    # Combine the previous user message with the current one to give context
+    search_query = message
+    if history:
+        last_user_msg = ""
+        for msg in reversed(history):
+            if msg["role"] == "user":
+                last_user_msg = msg["text"]
+                break
+        if last_user_msg:
+            search_query = f"Previous thought: {last_user_msg}\n\nFollow-up: {message}"
 
     try:
-        result  = rag_chain.invoke({"input": message})
+        result  = rag_chain.invoke({"input": search_query})
         answer  = result["answer"]
         sources = [
             doc.page_content[:120]
