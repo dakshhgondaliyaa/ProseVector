@@ -6,17 +6,18 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
-from langchain_ollama import OllamaLLM
-from langchain_core.prompts import PromptTemplate
-from langchain_classic.chains import create_retrieval_chain
+from langchain_ollama import ChatOllama
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_classic.chains import create_history_aware_retriever, create_retrieval_chain
 from langchain_classic.chains.combine_documents import create_stuff_documents_chain
+from langchain_core.messages import HumanMessage, AIMessage
 
 load_dotenv()
 
 FAISS_INDEX_PATH     = "faiss_index"
 EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 OLLAMA_MODEL         = "phi3"      # change to "mistral" if you have 8GB+ RAM
-TOP_K_RESULTS        = 3
+TOP_K_RESULTS        = 5
 
 app = Flask(__name__, static_folder="frontend")
 CORS(app)
@@ -26,7 +27,7 @@ def load_vectorstore():
     print("Loading FAISS index from disk...")
     embeddings = HuggingFaceEmbeddings(
         model_name=EMBEDDING_MODEL_NAME,
-        model_kwargs={"device": "cpu"},
+        model_kwargs={"device": "cuda"},
         encode_kwargs={"normalize_embeddings": True},
     )
     vectorstore = FAISS.load_local(
@@ -40,14 +41,31 @@ def load_vectorstore():
 # ── Build RAG chain ───────────────────────────────────────────────────────────
 def build_rag_chain(vectorstore):
     print(f"Connecting to Ollama model: {OLLAMA_MODEL}")
-    llm = OllamaLLM(model=OLLAMA_MODEL, temperature=0.3)
+    llm = ChatOllama(model=OLLAMA_MODEL, temperature=0.3)
 
     retriever = vectorstore.as_retriever(
         search_type="similarity",
         search_kwargs={"k": TOP_K_RESULTS},
     )
 
-    prompt_template = """You are ProseVector, a helpful and expert AI book librarian.
+    # 1. History aware retriever
+    contextualize_q_system_prompt = """Given a chat history and the latest user question \
+which might reference context in the chat history, formulate a standalone question \
+which can be understood without the chat history. Do NOT answer the question, \
+just reformulate it if needed and otherwise return it as is."""
+
+    contextualize_q_prompt = ChatPromptTemplate.from_messages([
+        ("system", contextualize_q_system_prompt),
+        MessagesPlaceholder("chat_history"),
+        ("human", "{input}"),
+    ])
+    
+    history_aware_retriever = create_history_aware_retriever(
+        llm, retriever, contextualize_q_prompt
+    )
+
+    # 2. Answer chain
+    qa_system_prompt = """You are ProseVector, a helpful and expert AI book librarian.
 A reader has described a book they are looking for. Use the book summaries provided in the context below to recommend the best matching book.
 
 Your response must:
@@ -66,19 +84,16 @@ Example of correct fallback:
 - Correct response: "I couldn't find an exact match. Could you describe the plot in more detail?"
 
 Context:
-{context}
+{context}"""
 
-Reader's description: {input}
+    qa_prompt = ChatPromptTemplate.from_messages([
+        ("system", qa_system_prompt),
+        MessagesPlaceholder("chat_history"),
+        ("human", "{input}"),
+    ])
 
-Recommendation:"""
-
-    PROMPT = PromptTemplate(
-        template=prompt_template,
-        input_variables=["context", "input"],
-    )
-
-    combine_docs_chain = create_stuff_documents_chain(llm, PROMPT)
-    chain = create_retrieval_chain(retriever, combine_docs_chain)
+    combine_docs_chain = create_stuff_documents_chain(llm, qa_prompt)
+    chain = create_retrieval_chain(history_aware_retriever, combine_docs_chain)
 
     print("RAG chain ready.")
     return chain
@@ -100,19 +115,17 @@ def chat():
     if not message:
         return jsonify({"error": "Empty message"}), 400
         
-    # Combine the previous user message with the current one to give context
-    search_query = message
-    if history:
-        last_user_msg = ""
-        for msg in reversed(history):
-            if msg["role"] == "user":
-                last_user_msg = msg["text"]
-                break
-        if last_user_msg:
-            search_query = f"Previous thought: {last_user_msg}\n\nFollow-up: {message}"
+    # Convert frontend history to LangChain messages
+    chat_history = []
+    # Limit to the last 2 messages (1 QA pair) to prevent CPU overload
+    for msg in history[-2:]:
+        if msg["role"] == "user":
+            chat_history.append(HumanMessage(content=msg["text"]))
+        else:
+            chat_history.append(AIMessage(content=msg["text"]))
 
     try:
-        result  = rag_chain.invoke({"input": search_query})
+        result  = rag_chain.invoke({"input": message, "chat_history": chat_history})
         answer  = result["answer"]
         sources = [
             doc.page_content[:120]
