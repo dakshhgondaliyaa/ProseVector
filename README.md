@@ -30,7 +30,7 @@ RAG chatbot with custom HTML frontend. Recommends books from semantic search.
 ## Tech Stack
 - Flask — backend server and API
 - LangChain — RAG pipeline orchestration
-- HuggingFace Datasets — CMU Book Summaries (5,000 books)
+- HuggingFace Datasets — CMU Book Summaries (16,500+ books)
 - sentence-transformers/all-MiniLM-L6-v2 — local embedding model (free)
 - FAISS — local vector database (no server needed)
 - Ollama phi3/mistral — local LLM (completely free, works offline)
