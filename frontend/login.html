@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ProseVector — Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-color: #09090b;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --accent-gradient: linear-gradient(135deg, #8b5cf6, #ec4899);
+    --input-bg: #18181b;
+    --input-border: #3f3f46;
+    --cover-bg: linear-gradient(135deg, #1e1e24, #121217);
+    --page-bg: #1f1f23;
+  }
+
+  body {
+    margin: 0;
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--bg-color);
+    background-image: radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.15), transparent 25%),
+                      radial-gradient(circle at 85% 30%, rgba(236, 72, 153, 0.15), transparent 25%);
+    color: var(--text-main);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  /* Animated Background Books */
+  .bg-books {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    overflow: hidden;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .bg-book-icon {
+    position: absolute;
+    color: var(--accent);
+    opacity: 0.3;
+    animation: drift 20s infinite alternate ease-in-out;
+  }
+  @keyframes drift {
+    0% { 
+      transform: translate(0, 0) rotate(0deg) scale(1); 
+      filter: blur(4px) drop-shadow(0 0 10px rgba(139, 92, 246, 0.5)); 
+    }
+    100% { 
+      transform: translate(120px, -150px) rotate(45deg) scale(1.2); 
+      filter: blur(6px) drop-shadow(0 0 35px rgba(236, 72, 153, 0.9)); 
+    }
+  }
+
+  /* 3D Scene Setup */
+  .scene {
+    width: 360px;
+    height: 480px;
+    perspective: 1500px;
+  }
+
+  .book {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* When hovering, the whole book slides slightly right to center the open spread */
+  .scene:hover .book {
+    transform: translateX(180px);
+  }
+
+  .cover, .page-right {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    transform-style: preserve-3d;
+    border-radius: 4px 16px 16px 4px;
+  }
+
+  /* Book Cover */
+  .cover {
+    transform-origin: left center;
+    transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 2;
+  }
+
+  .scene:hover .cover {
+    transform: rotateY(-180deg);
+  }
+
+  /* Front and Back of the Cover */
+  .cover-front, .cover-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 4px 16px 16px 4px;
+    box-shadow: inset 4px 0 10px rgba(0,0,0,0.8), inset -2px 0 5px rgba(255,255,255,0.1), 5px 5px 20px rgba(0,0,0,0.6);
+  }
+
+  .cover-front {
+    background: radial-gradient(circle at 50% 50%, #1e1e24, #121217);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-left: 18px solid #0a0a0c; /* Thicker Spine texture */
+  }
+
+  .cover-back {
+    background: #18181b;
+    transform: rotateY(180deg);
+  }
+
+  .logo {
+    font-size: 32px;
+    font-weight: 700;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -1px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-icon {
+    font-size: 48px;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hint {
+    position: absolute;
+    bottom: 30px;
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 300;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+
+  /* Inside Right Page (Login Form) */
+  .page-right {
+    background: #1f1f23;
+    z-index: 1;
+    border-left: 2px solid rgba(255,255,255,0.05);
+    border-right: 4px solid #d4d4d8; /* White page edges */
+    border-top: 1px solid #d4d4d8;
+    border-bottom: 1px solid #d4d4d8;
+    padding: 50px 40px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: 
+      inset -10px 0 20px rgba(0,0,0,0.5), /* Inner shadow */
+      10px 10px 30px rgba(0,0,0,0.8), /* Drop shadow */
+      2px 0 0 #e4e4e7, 4px 0 0 #d4d4d8, 6px 0 0 #a1a1aa; /* 3D paper stack */
+  }
+
+  .form-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 30px;
+    text-align: center;
+    color: var(--text-main);
+  }
+
+  .input-group {
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .input-group input {
+    width: 100%;
+    padding: 14px 16px;
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 8px;
+    color: var(--text-main);
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .input-group input:focus {
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+  }
+
+  .input-group input::placeholder {
+    color: var(--text-muted);
+  }
+
+  .login-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent-gradient);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 10px;
+  }
+
+  .login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+  }
+
+  .login-btn:active {
+    transform: translateY(0);
+  }
+  
+  .toggle-link {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .toggle-link:hover {
+    color: #8b5cf6;
+  }
+  .error-msg {
+    color: #ef4444;
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: 12px;
+    min-height: 20px;
+  }
+  .hidden {
+    display: none !important;
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-books">
+  <svg class="bg-book-icon" style="top: 10%; left: 15%; width: 120px; animation-duration: 25s; animation-delay: 0s;" viewBox="0 0 24 24" fill="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14zM2 5.5C2 3.01 4.01 1 6.5 1H22v18H6.5C5.12 19 4 20.12 4 21.5V22h18v2H2v-20.5z"/></svg>
+  <svg class="bg-book-icon" style="top: 60%; left: 10%; width: 200px; animation-duration: 35s; animation-delay: -5s;" viewBox="0 0 24 24" fill="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14zM2 5.5C2 3.01 4.01 1 6.5 1H22v18H6.5C5.12 19 4 20.12 4 21.5V22h18v2H2v-20.5z"/></svg>
+  <svg class="bg-book-icon" style="top: 30%; right: 15%; width: 150px; animation-duration: 28s; animation-delay: -10s;" viewBox="0 0 24 24" fill="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14zM2 5.5C2 3.01 4.01 1 6.5 1H22v18H6.5C5.12 19 4 20.12 4 21.5V22h18v2H2v-20.5z"/></svg>
+  <svg class="bg-book-icon" style="top: 75%; right: 25%; width: 180px; animation-duration: 40s; animation-delay: -15s;" viewBox="0 0 24 24" fill="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14zM2 5.5C2 3.01 4.01 1 6.5 1H22v18H6.5C5.12 19 4 20.12 4 21.5V22h18v2H2v-20.5z"/></svg>
+  <svg class="bg-book-icon" style="top: 20%; right: 45%; width: 100px; animation-duration: 22s; animation-delay: -2s;" viewBox="0 0 24 24" fill="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14zM2 5.5C2 3.01 4.01 1 6.5 1H22v18H6.5C5.12 19 4 20.12 4 21.5V22h18v2H2v-20.5z"/></svg>
+</div>
+
+<div class="scene">
+  <div class="book">
+    <!-- The cover that flips -->
+    <div class="cover">
+      <div class="cover-back"></div>
+      <div class="cover-front">
+        <div class="logo">
+          <div class="logo-icon">📖</div>
+          ProseVector
+        </div>
+        <div class="hint">Hover to open</div>
+      </div>
+    </div>
+    
+    <!-- The inside page containing the form -->
+    <div class="page-right">
+      <div class="form-title" id="formTitle">Login</div>
+      <div class="error-msg" id="errorMsg"></div>
+      
+      <form onsubmit="handleSubmit(event)">
+        <div class="input-group">
+          <input type="text" id="username" placeholder="Username" required autocomplete="off">
+        </div>
+        <div class="input-group">
+          <input type="password" id="password" placeholder="Password" required autocomplete="off">
+        </div>
+        <div class="input-group hidden" id="confirmGroup">
+          <input type="password" id="confirmPassword" placeholder="Confirm Password" autocomplete="off">
+        </div>
+        <button type="submit" class="login-btn" id="submitBtn">Login</button>
+      </form>
+      <div class="toggle-link" onclick="toggleMode()" id="modeToggle">Don't have an account? Register</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let isLogin = true;
+
+  function toggleMode() {
+    isLogin = !isLogin;
+    document.getElementById('formTitle').innerText = isLogin ? 'Login' : 'Register';
+    document.getElementById('submitBtn').innerText = isLogin ? 'Login' : 'Sign Up';
+    document.getElementById('modeToggle').innerText = isLogin ? "Don't have an account? Register" : "Already have an account? Login";
+    
+    if (isLogin) {
+      document.getElementById('confirmGroup').classList.add('hidden');
+      document.getElementById('confirmPassword').removeAttribute('required');
+    } else {
+      document.getElementById('confirmGroup').classList.remove('hidden');
+      document.getElementById('confirmPassword').setAttribute('required', 'true');
+    }
+    document.getElementById('errorMsg').innerText = '';
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+    const errorMsg = document.getElementById('errorMsg');
+    errorMsg.innerText = '';
+
+    if (!isLogin) {
+      const confirm = document.getElementById('confirmPassword').value;
+      if (password !== confirm) {
+        errorMsg.innerText = 'Passwords do not match';
+        return;
+      }
+    }
+
+    const endpoint = isLogin ? '/api/login' : '/api/register';
+    const originalBtnText = document.getElementById('submitBtn').innerText;
+    document.getElementById('submitBtn').innerText = 'Processing...';
+
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      const data = await res.json();
+      
+      if (data.success) {
+        localStorage.setItem('pv_auth', 'true');
+        localStorage.setItem('pv_user', username);
+        window.location.href = "/app";
+      } else {
+        errorMsg.innerText = data.error || 'An error occurred';
+        document.getElementById('submitBtn').innerText = originalBtnText;
+      }
+    } catch (err) {
+      errorMsg.innerText = 'Network error. Is the server running?';
+      document.getElementById('submitBtn').innerText = originalBtnText;
+    }
+  }
+</script>
+
+</body>
+</html>

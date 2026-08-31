@@ -4,6 +4,8 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
+import sqlite3
+from werkzeug.security import generate_password_hash, check_password_hash
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_ollama import ChatOllama
@@ -21,6 +23,22 @@ TOP_K_RESULTS        = 5
 
 app = Flask(__name__, static_folder="frontend")
 CORS(app)
+
+# ── Database Initialization ───────────────────────────────────────────────────
+def init_db():
+    conn = sqlite3.connect('users.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            password_hash TEXT NOT NULL
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+init_db()
 
 # ── Load FAISS index ──────────────────────────────────────────────────────────
 def load_vectorstore():
@@ -100,12 +118,70 @@ Context:
 
 # ── Routes ────────────────────────────────────────────────────────────────────
 
-# Serve the frontend HTML
+# Serve the login HTML at root
 @app.route("/")
+def serve_login():
+    return send_from_directory("frontend", "login.html")
+
+# Serve the main chat interface
+@app.route("/app")
 def serve_index():
     return send_from_directory("frontend", "index.html")
 
-# Chat API endpoint — called by the frontend via fetch()
+# ── Authentication API ────────────────────────────────────────────────────────
+@app.route("/api/register", methods=["POST"])
+def register():
+    data = request.json
+    username = data.get("username", "").strip()
+    password = data.get("password", "")
+    
+    if not username or not password:
+        return jsonify({"success": False, "error": "Username and password are required"}), 400
+        
+    try:
+        conn = sqlite3.connect('users.db')
+        cursor = conn.cursor()
+        
+        # Check if user exists
+        cursor.execute("SELECT id FROM users WHERE username = ?", (username,))
+        if cursor.fetchone():
+            return jsonify({"success": False, "error": "Username already exists"}), 409
+            
+        password_hash = generate_password_hash(password)
+        cursor.execute("INSERT INTO users (username, password_hash) VALUES (?, ?)", (username, password_hash))
+        conn.commit()
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+    finally:
+        conn.close()
+        
+    return jsonify({"success": True})
+
+@app.route("/api/login", methods=["POST"])
+def login_api():
+    data = request.json
+    username = data.get("username", "").strip()
+    password = data.get("password", "")
+    
+    if not username or not password:
+        return jsonify({"success": False, "error": "Username and password are required"}), 400
+        
+    try:
+        conn = sqlite3.connect('users.db')
+        cursor = conn.cursor()
+        cursor.execute("SELECT password_hash FROM users WHERE username = ?", (username,))
+        row = cursor.fetchone()
+        
+        if row and check_password_hash(row[0], password):
+            return jsonify({"success": True})
+        else:
+            return jsonify({"success": False, "error": "Invalid username or password"}), 401
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+    finally:
+        conn.close()
+
+# ── Chat API ──────────────────────────────────────────────────────────────────
 @app.route("/chat", methods=["POST"])
 def chat():
     data    = request.get_json()
