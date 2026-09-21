@@ -796,9 +796,9 @@ async function sendMessage() {
     if (data.error) {
        appendBotMessageUI('Error: ' + data.error, null, []);
     } else {
-       // Parse book title
-       const match = data.answer.match(/["«]([^"»\n]{3,60})["»]/);
-       const bookTitle = match ? match[1] : null;
+       // Parse book title (get the last quoted string to avoid previous context references)
+       const matches = [...data.answer.matchAll(/["«]([^"»\n]{2,80})["»]/g)];
+       const bookTitle = matches.length > 0 ? matches[matches.length - 1][1] : null;
        const cleanAnswer = data.answer.replace(/---[\s\S]*$/, '').trim();
        
        session.messages.push({ 
