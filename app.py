@@ -44,9 +44,9 @@ init_db()
 def load_vectorstore():
     print("Loading FAISS index from disk...")
     embeddings = HuggingFaceEmbeddings(
-        model_name=EMBEDDING_MODEL_NAME,
-        model_kwargs={"device": "cuda"},
-        encode_kwargs={"normalize_embeddings": True},
+        model_name="all-MiniLM-L6-v2",
+        model_kwargs={'device': 'cuda'},
+        encode_kwargs={'normalize_embeddings': True}
     )
     vectorstore = FAISS.load_local(
         FAISS_INDEX_PATH,
